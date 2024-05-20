@@ -46,19 +46,21 @@ export function Firebase({
       const { notification, data, messageId } = remoteMessage
       if (notification) {
         const { android, ...other } = notification
-        await notifee.displayNotification({
-          data,
-          id: messageId,
-          android: {
-            ...android,
-            channelId: android?.channelId || channelId,
-            smallIcon: android?.smallIcon || smallIcon,
-            pressAction: {
-              id: 'default',
-            }
-          },
-          ...other
-        } as any)
+        if (Platform.OS === 'android') {
+          await notifee.displayNotification({
+            data,
+            id: messageId,
+            android: {
+              ...android,
+              channelId: android?.channelId || channelId,
+              smallIcon: android?.smallIcon || smallIcon,
+              pressAction: {
+                id: 'default',
+              }
+            },
+            ...other
+          } as any)
+        }
       }
     })
     notifee.onForegroundEvent(onEventHandler(onPress));

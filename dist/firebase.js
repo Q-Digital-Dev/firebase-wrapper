@@ -59,19 +59,21 @@ function Firebase({ ignoreRegisterByPlatform, channelId, smallIcon, appState, on
             const { notification, data, messageId } = remoteMessage;
             if (notification) {
                 const { android, ...other } = notification;
-                await react_native_2.default.displayNotification({
-                    data,
-                    id: messageId,
-                    android: {
-                        ...android,
-                        channelId: android?.channelId || channelId,
-                        smallIcon: android?.smallIcon || smallIcon,
-                        pressAction: {
-                            id: 'default',
-                        }
-                    },
-                    ...other
-                });
+                if (react_native_1.Platform.OS === 'android') {
+                    await react_native_2.default.displayNotification({
+                        data,
+                        id: messageId,
+                        android: {
+                            ...android,
+                            channelId: android?.channelId || channelId,
+                            smallIcon: android?.smallIcon || smallIcon,
+                            pressAction: {
+                                id: 'default',
+                            }
+                        },
+                        ...other
+                    });
+                }
             }
         });
         react_native_2.default.onForegroundEvent((0, onEventHandler_1.onEventHandler)(onPress));
