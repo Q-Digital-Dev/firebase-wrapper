@@ -1,0 +1,25 @@
+{
+  "name": "firebase-wrapper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Q-digital",
+  "license": "ISC",
+  "dependencies": {
+    "@notifee/react-native": "7.8.2",
+    "@react-native-firebase/app": "17.3.2",
+    "@react-native-firebase/messaging": "17.3.2",
+    "lodash": "^4.17.21",
+    "react": "18.1.0",
+    "react-native": "0.70.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.4",
+    "@types/react-native": "0.70.1",
+    "typescript": "^5.4.5"
+  }
+}
