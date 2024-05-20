@@ -8,6 +8,7 @@ function onEventHandler(onPress) {
             onPress?.(detail.notification);
             return true;
         }
+        return;
     };
 }
 exports.onEventHandler = onEventHandler;

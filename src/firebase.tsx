@@ -56,7 +56,6 @@ export function Firebase({
             smallIcon: android?.smallIcon || smallIcon,
             pressAction: {
               id: 'default',
-
             }
           },
           ...other

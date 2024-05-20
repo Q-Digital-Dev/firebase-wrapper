@@ -1,1 +1,1 @@
-export declare function useAppState(): any;
+export declare function useAppState(): "active" | "background" | "inactive" | "unknown" | "extension";
