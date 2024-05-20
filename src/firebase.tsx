@@ -6,17 +6,16 @@ import { FirebaseP } from './firebase.options'
 import _ from 'lodash';
 import { onMessageHandler } from './utils/onMessageHandler';
 import { onEventHandler } from './utils/onEventHandler';
-import { useAppState } from './utils/useAppState';
 
 export function Firebase({
   ignoreRegisterByPlatform,
   channelId,
   smallIcon,
+  appState,
   onToken,
   onMessage,
   onPress
 }: FirebaseP) {
-  const appState = useAppState()
 
   async function start() {
     if (!ignoreRegisterByPlatform.find((os) => os === Platform.OS)) {

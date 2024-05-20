@@ -33,9 +33,7 @@ const react_native_1 = require("react-native");
 const react_native_2 = __importStar(require("@notifee/react-native"));
 const onMessageHandler_1 = require("./utils/onMessageHandler");
 const onEventHandler_1 = require("./utils/onEventHandler");
-const useAppState_1 = require("./utils/useAppState");
-function Firebase({ ignoreRegisterByPlatform, channelId, smallIcon, onToken, onMessage, onPress }) {
-    const appState = (0, useAppState_1.useAppState)();
+function Firebase({ ignoreRegisterByPlatform, channelId, smallIcon, appState, onToken, onMessage, onPress }) {
     async function start() {
         if (!ignoreRegisterByPlatform.find((os) => os === react_native_1.Platform.OS)) {
             await (0, messaging_1.default)().registerDeviceForRemoteMessages();
