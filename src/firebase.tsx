@@ -2,10 +2,11 @@ import { useEffect } from 'react'
 import messaging from '@react-native-firebase/messaging'
 import { Platform } from 'react-native'
 import notifee, { AndroidImportance, AndroidVisibility, EventType } from '@notifee/react-native';
-import { FirebaseP } from './firebase.options'
+import { BACKGROUND_STORAGE_NAME, FirebaseP } from './firebase.options'
 import _ from 'lodash';
 import { onMessageHandler } from './utils/onMessageHandler';
 import { onEventHandler } from './utils/onEventHandler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Firebase({
   ignoreRegisterByPlatform,
@@ -67,10 +68,28 @@ export function Firebase({
   }
 
   async function onInitialNotification() {
-    const initialNotification = (await messaging().getInitialNotification() || (await notifee.getInitialNotification())?.notification)
-    if (initialNotification) {
-      onEventHandler(onPress)({ type: EventType.PRESS, detail: { notification: initialNotification } })
+    try {
+      const initialNotification = (await messaging().getInitialNotification() || (await notifee.getInitialNotification())?.notification)
+      if (initialNotification) {
+        onEventHandler(onPress)({ type: EventType.PRESS, detail: { notification: initialNotification } })
+
+        return true
+      }
+
+      return false
+    } catch (error) {
+      return false
     }
+  }
+
+  async function onBackgroundMessageAfterAppActive() {
+    const currentMessages = await AsyncStorage.getItem(BACKGROUND_STORAGE_NAME) || JSON.stringify([]);
+    const messageArray = JSON.parse(currentMessages);
+    for (let index = 0; index < messageArray.length; index++) {
+      const message = messageArray[index];
+      onMessage?.(message)
+    }
+    await AsyncStorage.setItem(BACKGROUND_STORAGE_NAME, JSON.stringify([]))
   }
 
   useEffect(() => {
@@ -80,6 +99,7 @@ export function Firebase({
   useEffect(() => {
     if (appState === 'active') {
       onInitialNotification()
+        .then(onBackgroundMessageAfterAppActive)
     }
   }, [appState, onPress])
 

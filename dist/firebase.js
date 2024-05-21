@@ -31,8 +31,10 @@ const react_1 = require("react");
 const messaging_1 = __importDefault(require("@react-native-firebase/messaging"));
 const react_native_1 = require("react-native");
 const react_native_2 = __importStar(require("@notifee/react-native"));
+const firebase_options_1 = require("./firebase.options");
 const onMessageHandler_1 = require("./utils/onMessageHandler");
 const onEventHandler_1 = require("./utils/onEventHandler");
+const async_storage_1 = __importDefault(require("@react-native-async-storage/async-storage"));
 function Firebase({ ignoreRegisterByPlatform, channelId, smallIcon, appState, onToken, onMessage, onPress }) {
     async function start() {
         if (!ignoreRegisterByPlatform.find((os) => os === react_native_1.Platform.OS)) {
@@ -79,17 +81,34 @@ function Firebase({ ignoreRegisterByPlatform, channelId, smallIcon, appState, on
         react_native_2.default.onForegroundEvent((0, onEventHandler_1.onEventHandler)(onPress));
     }
     async function onInitialNotification() {
-        const initialNotification = (await (0, messaging_1.default)().getInitialNotification() || (await react_native_2.default.getInitialNotification())?.notification);
-        if (initialNotification) {
-            (0, onEventHandler_1.onEventHandler)(onPress)({ type: react_native_2.EventType.PRESS, detail: { notification: initialNotification } });
+        try {
+            const initialNotification = (await (0, messaging_1.default)().getInitialNotification() || (await react_native_2.default.getInitialNotification())?.notification);
+            if (initialNotification) {
+                (0, onEventHandler_1.onEventHandler)(onPress)({ type: react_native_2.EventType.PRESS, detail: { notification: initialNotification } });
+                return true;
+            }
+            return false;
         }
+        catch (error) {
+            return false;
+        }
+    }
+    async function onBackgroundMessageAfterAppActive() {
+        const currentMessages = await async_storage_1.default.getItem(firebase_options_1.BACKGROUND_STORAGE_NAME) || JSON.stringify([]);
+        const messageArray = JSON.parse(currentMessages);
+        for (let index = 0; index < messageArray.length; index++) {
+            const message = messageArray[index];
+            onMessage?.(message);
+        }
+        await async_storage_1.default.setItem(firebase_options_1.BACKGROUND_STORAGE_NAME, JSON.stringify([]));
     }
     (0, react_1.useEffect)(() => {
         start();
     }, []);
     (0, react_1.useEffect)(() => {
         if (appState === 'active') {
-            onInitialNotification();
+            onInitialNotification()
+                .then(onBackgroundMessageAfterAppActive);
         }
     }, [appState, onPress]);
     return (null);

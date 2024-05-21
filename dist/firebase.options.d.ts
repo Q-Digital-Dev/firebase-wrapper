@@ -10,3 +10,4 @@ export type FirebaseP = {
     onMessage?(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void;
     onPress?(notification?: Notification): void;
 };
+export declare const BACKGROUND_STORAGE_NAME = "backgroundStorageName";
