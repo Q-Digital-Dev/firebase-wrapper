@@ -9,7 +9,9 @@ export type FirebaseP = {
   appState: AppStateStatus
 
   onToken(token: string): void
-  onMessage?(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void
+  onMessage?(remoteMessage: FirebaseMessagingTypes.RemoteMessage & {
+    isBackground?: boolean
+  }): void
   onPress?(notification?: Notification): void
 }
 

@@ -9,7 +9,10 @@ export function headless() {
   messaging().setBackgroundMessageHandler(onMessageHandler(async (remoteMessage) => {
     const currentMessages = await AsyncStorage.getItem(BACKGROUND_STORAGE_NAME) || JSON.stringify([]);
     const messageArray = JSON.parse(currentMessages);
-    messageArray.push(remoteMessage);
+    messageArray.push({
+      ...remoteMessage,
+      isBackground: true,
+    });
     await AsyncStorage.setItem(BACKGROUND_STORAGE_NAME, JSON.stringify(messageArray));
   }));
 

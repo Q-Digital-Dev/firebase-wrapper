@@ -7,7 +7,9 @@ export type FirebaseP = {
     smallIcon: string;
     appState: AppStateStatus;
     onToken(token: string): void;
-    onMessage?(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void;
+    onMessage?(remoteMessage: FirebaseMessagingTypes.RemoteMessage & {
+        isBackground?: boolean;
+    }): void;
     onPress?(notification?: Notification): void;
 };
 export declare const BACKGROUND_STORAGE_NAME = "backgroundStorageName";
